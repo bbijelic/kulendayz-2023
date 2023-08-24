@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>
+                [%d{yyyy-MM-dd HH:mm:ss.SSS}] [${HOSTNAME}] [%thread] %level %logger{36}@%method:%line - %msg%n
+            </pattern>
+        </encoder>
+    </appender>
+
+    <appender name="ASYNC_CONSOLE" class="ch.qos.logback.classic.AsyncAppender">
+        <discardingThreshold>0</discardingThreshold>
+        <appender-ref ref="CONSOLE" />
+        <queueSize>256</queueSize>
+        <includeCallerData>false</includeCallerData>
+        <neverBlock>true</neverBlock>
+    </appender>
+
+    <appender name="LOGSTASH" class="net.logstash.logback.appender.LogstashUdpSocketAppender">
+        <host>logstash</host>
+        <port>5000</port>
+        <layout class="net.logstash.logback.layout.LogstashLayout">
+            <includeCallerData>true</includeCallerData>
+            <customFields>{"service":"discovery"}</customFields>
+        </layout>
+    </appender>
+
+    <root level="DEBUG" additivity="false">
+        <appender-ref ref="ASYNC_CONSOLE" />
+        <appender-ref ref="LOGSTASH" />
+    </root>
+</configuration>

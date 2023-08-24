@@ -1,0 +1,110 @@
+version: "3.9"
+
+volumes:
+  elasticsearch-data:
+    name: elasticsearch-data
+  elasticsearch-setup-data:
+    name: elasticsearch-setup-data
+
+services:
+
+  elasticsearch:
+    image: elasticsearch:8.6.0
+    restart: always
+    healthcheck:
+      test: [ "CMD-SHELL", "curl -f -u elastic:elasticsearch http://localhost:9200 || exit 1" ]
+      interval: 1m
+      timeout: 30s
+    environment:
+      ELASTIC_PASSWORD: elasticsearch
+      discovery.type: single-node
+    ports:
+      - "127.0.0.1:9200:9200"
+      - "127.0.0.1:9300:9300"
+    volumes:
+      - elasticsearch-data:/usr/share/elasticsearch/data:rw
+      - ./elk/elastic/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro
+    deploy:
+      mode: replicated
+      replicas: 1
+      resources:
+        limits:
+          memory: 2048m
+        reservations:
+          memory: 1024m
+
+  elasticsearch-setup:
+    build:
+      context: elk/setup/
+      args:
+        ELASTIC_IMAGE: elasticsearch:8.6.0
+    init: true
+    volumes:
+      - ./elk/setup/entrypoint.sh:/entrypoint.sh:ro
+      - ./elk/setup/helpers.sh:/helpers.sh:ro
+      - ./elk/setup/roles:/roles:ro
+      - ./elk/setup/policies:/policies:ro
+      - ./elk/setup/templates:/templates:ro
+      - elasticsearch-setup-data:/state:rw
+    environment:
+      ELASTIC_PASSWORD: elasticsearch
+      LOGSTASH_INTERNAL_PASSWORD: elasticsearch
+      KIBANA_SYSTEM_PASSWORD: elasticsearch
+      METRICBEAT_INTERNAL_PASSWORD: elasticsearch
+      FILEBEAT_INTERNAL_PASSWORD: elasticsearch
+      HEARTBEAT_INTERNAL_PASSWORD: elasticsearch
+      MONITORING_INTERNAL_PASSWORD: elasticsearch
+      BEATS_SYSTEM_PASSWORD: elasticsearch
+    depends_on:
+      - elasticsearch
+
+  kibana:
+    image: kibana:8.6.0
+    restart: always
+    volumes:
+      - ./elk/kibana/kibana.yml:/usr/share/kibana/config/kibana.yml:ro
+    ports:
+      - "127.0.0.1:5601:5601"
+    healthcheck:
+      test: [ "CMD-SHELL", "curl -s -I http://localhost:5601 | grep -q 'HTTP/1.1 302 Found'" ]
+      interval: 1m
+      timeout: 30s
+    environment:
+      KIBANA_SYSTEM_PASSWORD: elasticsearch
+    depends_on:
+      - elasticsearch
+    deploy:
+      mode: replicated
+      replicas: 1
+      resources:
+        limits:
+          memory: 512m
+        reservations:
+          memory: 256m
+
+  logstash:
+    image: logstash:8.6.0
+    restart: always
+    volumes:
+      - ./elk/logstash/logstash.yml:/usr/share/logstash/config/logstash.yml:ro
+      - ./elk/logstash/pipeline:/usr/share/logstash/pipeline:ro
+    ports:
+      - "127.0.0.1:5000:5000/tcp"
+      - "127.0.0.1:5000:5000/udp"
+      - "127.0.0.1:9600:9600"
+      - "127.0.0.1:5044:5044"
+    environment:
+      ELASTIC_PORT: 9200
+      LOGSTASH_PASSWORD: elasticsearch
+    healthcheck:
+      test: [ "CMD-SHELL", "curl -f http://localhost:9600 || exit 1" ]
+      interval: 1m
+      timeout: 30s
+    deploy:
+      mode: replicated
+      replicas: 1
+      resources:
+        limits:
+          memory: 512m
+        reservations:
+          memory: 256m

@@ -1,0 +1,33 @@
+server:
+  port: 8761
+
+spring:
+
+  application:
+    name: discovery-service
+
+eureka:
+  instance:
+    prefer-ip-address: true
+    metadataMap:
+      "prometheus.path": "/actuator/prometheus"
+  client:
+    registerWithEureka: true
+    fetchRegistry: false
+
+management:
+  info:
+    env:
+      enabled: true
+    java:
+      enabled: true
+  endpoints:
+    enabled-by-default: true
+    web:
+      exposure:
+        include: health, prometheus, info
+
+info:
+  app:
+    name: Discovery Service
+    description: Discovery service with Netflix Eureka

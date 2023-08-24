@@ -1,0 +1,29 @@
+version: "3.9"
+
+volumes:
+  rabbitmq-data:
+    name: rabbitmq-data
+
+services:
+
+  rabbitmq:
+    image: rabbitmq:3.12.2-management-alpine
+    restart: always
+    healthcheck:
+      test: rabbitmq-diagnostics -q ping
+      interval: 1m
+      timeout: 30s
+    ports:
+      - "127.0.0.1:15672:15672"
+    volumes:
+      - rabbitmq-data:/var/lib/rabbitmq/
+      - ./rabbitmq/rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf:ro
+      - ./rabbitmq/definitions.json:/etc/rabbitmq/definitions.json:ro
+    deploy:
+      mode: replicated
+      replicas: 1
+      resources:
+        limits:
+          memory: 512m
+        reservations:
+          memory: 256m

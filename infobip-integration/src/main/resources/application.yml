@@ -1,0 +1,81 @@
+server:
+  error:
+    whitelabel:
+      enabled: false
+
+spring:
+  application:
+    name: infobip-integration
+
+  datasource:
+    url: jdbc:postgresql://postgres:5432/ib_int
+    username: ib_int_user
+    password: ib_int_user
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: create
+    show-sql: true
+    properties:
+      javax:
+        persistence:
+          schema-generation:
+            create-source: metadata
+            scripts:
+              create-target: ./target/generated_schema.sql
+              action: create
+      hibernate:
+        globally_quoted_identifiers: true
+        globally_quoted_identifiers_skip_column_definitions: true
+        generate_statistics: false
+        format_sql: true
+        connection:
+          charSet: UTF-8
+
+  liquibase:
+    enabled: true
+    change-log: classpath:/db/changelog/master.yml
+    drop-first: true
+
+  zipkin:
+    baseUrl: http://zipkin:9411
+
+  rabbitmq:
+    host: rabbitmq
+    port: 5672
+    username: ibkd_ib_int_user
+    password: ibkd_ib_int_user
+    virtual-host: infobip-kulendayz
+
+eureka:
+  instance:
+    preferIpAddress: true
+    metadataMap:
+      "prometheus.path": "/actuator/prometheus"
+  client:
+    initial-instance-info-replication-interval-seconds: 1
+    instance-info-replication-interval-seconds: 2
+    registry-fetch-interval-seconds: 2
+    healthcheck:
+      enabled: true
+    serviceUrl:
+      defaultZone: http://discovery:8761/eureka/
+
+management:
+  info:
+    env:
+      enabled: true
+    java:
+      enabled: true
+  endpoints:
+    enabled-by-default: true
+    web:
+      exposure:
+        include: health, prometheus, info
+
+info:
+  app:
+    name: Infobip Integration
+    description: Infobip Integration

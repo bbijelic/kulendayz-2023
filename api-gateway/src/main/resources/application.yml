@@ -1,0 +1,71 @@
+server:
+
+  error:
+    whitelabel:
+      enabled: false
+
+spring:
+
+  application:
+    name: api-gateway
+
+  cloud:
+    gateway:
+      default-filters:
+        - RemoveRequestHeader=Cookie
+        - StripPrefix=1
+      routes:
+        - id: plan-management-route
+          uri: lb://plan-management
+          predicates:
+            - Path=/plan-management/**
+        - id: bill-management-route
+          uri: lb://bill-management
+          predicates:
+            - Path=/bill-management/**
+        - id: user-management-route
+          uri: lb://user-management
+          predicates:
+            - Path=/user-management/**
+
+
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: https://dev-2r-y4jvh.eu.auth0.com/
+          jwk-set-uri: https://dev-2r-y4jvh.eu.auth0.com/.well-known/jwks.json
+
+auth0:
+  audience: https://api.rachoon.com
+
+eureka:
+  instance:
+    prefer-ip-address: true
+    metadataMap:
+      "prometheus.path": "/actuator/prometheus"
+  client:
+    initial-instance-info-replication-interval-seconds: 1
+    instance-info-replication-interval-seconds: 2
+    registry-fetch-interval-seconds: 2
+    healthcheck:
+      enabled: true
+    serviceUrl:
+      defaultZone: http://discovery:8761/eureka/
+
+management:
+  info:
+    env:
+      enabled: true
+    java:
+      enabled: true
+  endpoints:
+    enabled-by-default: true
+    web:
+      exposure:
+        include: health, prometheus, info
+
+info:
+  app:
+    name: API Gateway
+    description: API Gateway service

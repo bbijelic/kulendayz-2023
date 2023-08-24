@@ -1,0 +1,22 @@
+version: "3.9"
+
+services:
+
+  infobip-integration:
+    image: infobip-kulendayz/infobip-integration:latest
+    build:
+      context: ../infobip-integration
+      dockerfile: Dockerfile
+    restart: always
+    healthcheck:
+      test: [ "CMD-SHELL", "curl -f  http://localhost:8080/actuator/health || exit 1" ]
+      interval: 1m
+      timeout: 30s
+    deploy:
+      mode: replicated
+      replicas: 1
+      resources:
+        limits:
+          memory: 512m
+        reservations:
+          memory: 256m

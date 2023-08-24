@@ -1,0 +1,30 @@
+version: "3.9"
+
+services:
+
+  pgadmin:
+    image: dpage/pgadmin4:7.5
+    restart: always
+    healthcheck:
+      test: [ "CMD-SHELL", "wget --spider http://localhost/misc/ping || exit 1" ]
+      interval: 1m
+      timeout: 30s
+    ports:
+      - "127.0.0.1:15432:80"
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=admin@infobip.com
+      - PGADMIN_DEFAULT_PASSWORD=admin
+      - PGADMIN_LISTEN_ADDRESS=0.0.0.0
+      - PGADMIN_CONFIG_UPGRADE_CHECK_ENABLED=False
+    volumes:
+      - ./pgadmin/servers.json:/pgadmin4/servers.json:ro
+    depends_on:
+      - postgres
+    deploy:
+      mode: replicated
+      replicas: 1
+      resources:
+        limits:
+          memory: 256m
+        reservations:
+          memory: 128m
