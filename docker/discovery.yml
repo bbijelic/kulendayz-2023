@@ -5,7 +5,7 @@ services:
   discovery:
     image: infobip-kulendayz/discovery-service:latest
     build:
-      context: ../discovery
+      context: ../discovery/implementation
       dockerfile: Dockerfile
     restart: always
     healthcheck:

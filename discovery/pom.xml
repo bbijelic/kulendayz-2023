@@ -9,18 +9,15 @@
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
-    <artifactId>discovery-eureka</artifactId>
+    <artifactId>discovery-service-parent</artifactId>
     <version>0.0.1-SNAPSHOT</version>
+    <packaging>pom</packaging>
 
     <name>Discovery Service</name>
-    <description>Eureka service discovery using Netflix Eureka</description>
+    <description>Discovery Service</description>
 
-    <dependencies>
-        <!-- Spring Boot Starters -->
-        <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-netflix-eureka-server</artifactId>
-        </dependency>
-    </dependencies>
+    <modules>
+        <module>implementation</module>
+    </modules>
 
 </project>

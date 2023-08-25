@@ -5,7 +5,7 @@ services:
   user-management:
     image: infobip-kulendayz/user-management:latest
     build:
-      context: ../user-management
+      context: ../user-management/implementation
       dockerfile: Dockerfile
     restart: always
     healthcheck:

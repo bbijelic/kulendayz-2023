@@ -2,10 +2,10 @@ version: "3.9"
 
 services:
 
-  auth-service:
-    image: infobip-kulendayz/auth-service:latest
+  api-gateway:
+    image: ibkd/api-gateway:latest
     build:
-      context: ../auth-service/implementation
+      context: ../api-gateway/implementation
       dockerfile: Dockerfile
     restart: always
     healthcheck:

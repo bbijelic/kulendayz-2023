@@ -1,0 +1,48 @@
+version: '3.9'
+
+volumes:
+  prometheus-data:
+    name: prometheus-data
+
+services:
+
+  prometheus:
+    image: prom/prometheus:v2.38.0
+    restart: always
+    healthcheck:
+      test: ["CMD-SHELL", "wget --spider http://localhost:9090 || exit 1"]
+      interval: 1m
+      timeout: 30s
+    volumes:
+      - prometheus-data:/prometheus
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    deploy:
+      mode: replicated
+      replicas: 1
+      resources:
+        limits:
+          memory: 128m
+        reservations:
+          memory: 64m
+
+  grafana:
+    image: grafana/grafana:latest
+    restart: always
+    healthcheck:
+      test: ["CMD-SHELL", "wget --spider http://localhost:3000 || exit 1"]
+      interval: 1m
+      timeout: 30s
+    ports:
+      - "127.0.0.1:9000:3000"
+    volumes:
+      - ./grafana/provisioning/:/etc/grafana/provisioning/:ro
+    depends_on:
+      - prometheus
+    deploy:
+      mode: replicated
+      replicas: 1
+      resources:
+        limits:
+          memory: 128m
+        reservations:
+          memory: 64m

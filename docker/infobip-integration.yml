@@ -5,7 +5,7 @@ services:
   infobip-integration:
     image: infobip-kulendayz/infobip-integration:latest
     build:
-      context: ../infobip-integration
+      context: ../infobip-integration/implementation
       dockerfile: Dockerfile
     restart: always
     healthcheck:
