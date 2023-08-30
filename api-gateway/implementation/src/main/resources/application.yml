@@ -37,15 +37,23 @@ eureka:
     metadataMap:
       "prometheus.path": "/actuator/prometheus"
   client:
-    initial-instance-info-replication-interval-seconds: 1
-    instance-info-replication-interval-seconds: 2
-    registry-fetch-interval-seconds: 2
+    initial-instance-info-replication-interval-seconds: 2
+    instance-info-replication-interval-seconds: 5
+    registry-fetch-interval-seconds: 10
     healthcheck:
       enabled: true
     serviceUrl:
       defaultZone: http://discovery:8761/eureka/
 
+
 management:
+  zipkin:
+    tracing:
+      endpoint: http://zipkin:9411/api/v2/spans
+  tracing:
+    enabled: true
+    sampling:
+      probability: 1.0
   info:
     env:
       enabled: true

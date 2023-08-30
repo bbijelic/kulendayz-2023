@@ -25,6 +25,8 @@
         </layout>
     </appender>
 
+    <logger name="com.infobip.kulendayz" level="DEBUG" />
+
     <root level="DEBUG" additivity="false">
         <appender-ref ref="ASYNC_CONSOLE" />
         <appender-ref ref="LOGSTASH" />

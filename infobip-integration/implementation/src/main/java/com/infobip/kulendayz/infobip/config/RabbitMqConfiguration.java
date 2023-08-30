@@ -1,4 +1,5 @@
-package com.infobip.kulendays.infobip.config;
+package com.infobip.kulendayz.infobip.config;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
@@ -6,19 +7,10 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.amqp.support.converter.MessageConverter;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-@ConditionalOnProperty(
-        name = {
-                "spring.rabbitmq.host",
-                "spring.rabbitmq.port",
-                "spring.rabbitmq.username",
-                "spring.rabbitmq.password",
-                "spring.rabbitmq.virtual-host"},
-        havingValue = ".*")
 public class RabbitMqConfiguration {
 
     @Value("${spring.rabbitmq.host}")

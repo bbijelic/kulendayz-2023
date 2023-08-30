@@ -11,14 +11,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-@ConditionalOnProperty(
-        name = {
-                "spring.rabbitmq.host",
-                "spring.rabbitmq.port",
-                "spring.rabbitmq.username",
-                "spring.rabbitmq.password",
-                "spring.rabbitmq.virtual-host"},
-        havingValue = ".*")
 public class RabbitMqConfiguration {
 
     @Value("${spring.rabbitmq.host}")

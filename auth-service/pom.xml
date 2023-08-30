@@ -19,6 +19,7 @@
     <modules>
         <module>implementation</module>
         <module>integration</module>
+        <module>tokens</module>
     </modules>
 
 </project>

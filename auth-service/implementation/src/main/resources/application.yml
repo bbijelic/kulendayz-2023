@@ -1,7 +1,7 @@
 server:
   error:
     whitelabel:
-      enabled: false
+      enabled: true
 
 spring:
   application:
@@ -17,7 +17,7 @@ spring:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
       ddl-auto: create
-    show-sql: true
+    show-sql: false
     properties:
       javax:
         persistence:
@@ -30,14 +30,14 @@ spring:
         globally_quoted_identifiers: true
         globally_quoted_identifiers_skip_column_definitions: true
         generate_statistics: false
-        format_sql: true
+        format_sql: false
         connection:
           charSet: UTF-8
 
   liquibase:
     enabled: true
     change-log: classpath:/db/changelog/master.yml
-    drop-first: true
+    drop-first: false
 
   zipkin:
     baseUrl: http://zipkin:9411
@@ -55,15 +55,22 @@ eureka:
     metadataMap:
       "prometheus.path": "/actuator/prometheus"
   client:
-    initial-instance-info-replication-interval-seconds: 1
-    instance-info-replication-interval-seconds: 2
-    registry-fetch-interval-seconds: 2
+    initial-instance-info-replication-interval-seconds: 2
+    instance-info-replication-interval-seconds: 5
+    registry-fetch-interval-seconds: 10
     healthcheck:
       enabled: true
     serviceUrl:
       defaultZone: http://discovery:8761/eureka/
 
 management:
+  zipkin:
+    tracing:
+      endpoint: http://zipkin:9411/api/v2/spans
+  tracing:
+    enabled: true
+    sampling:
+      probability: 1.0
   info:
     env:
       enabled: true
@@ -79,3 +86,9 @@ info:
   app:
     name: Authentication Service
     description: Authentication Service
+
+jwt:
+  claims:
+    issuer: Infobip @ KulenDayz 2023
+  secret: 5367566B59703373367639792F423F4528482B4D6251655468576D5A71347437
+  validity: 3600
