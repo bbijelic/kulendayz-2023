@@ -22,7 +22,7 @@ public class UserRegistrationRequestDto {
     @JsonProperty("email")
     private String email;
 
-    @Size(min = 64, max = 64)
+    @NotBlank
     @JsonProperty("password")
     private String password;
 
