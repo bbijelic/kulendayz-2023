@@ -96,8 +96,8 @@ jwt:
 infobip:
   registration:
     subject: New registration at Friday Morning Workshop @ Kulendayz 2023
-    sender: bojan.bijelic.os@gmail.com
-    recipient: bojan.bijelic.os@gmail.com
+    sender: change-me
+    recipient: change-me
   api:
-    url: https://pw3n43.api.infobip.com
-    key: e0ea9a0d9fab6238a71e87d7ea00e9c3-7e548010-dacd-4fff-9cba-795299b8bf42
+    url: https://change-me.api.infobip.com
+    key: change-me
